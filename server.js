@@ -128,10 +128,6 @@ io.on("connection", socket => {
       })
     })
 
-    activeGames.forEach((game, index) => {
-      console.log(game + '\r\n')
-    })
-
   })
   // when client indicates it is ready for the game to begin
   socket.on("ready", data => {
@@ -147,11 +143,9 @@ io.on("connection", socket => {
       }
     })
     if (index > -1) {
-      let tilePosition = Math.floor(Math.random() * 9) + 1;
       let socketIds = [games[index].players[0], games[index].players[1]]
       activeGames.push(socketIds);
-      io.to(games[index].players[0]).emit('activateboard', {starttime: Date.now(), activetile: tilePosition})
-      io.to(games[index].players[1]).emit('activateboard', {starttime: Date.now(), activetile: tilePosition})
+      helper.sendNewTilePosition(games[index].players[0], games[index].players[1], io)
     }
     })
 

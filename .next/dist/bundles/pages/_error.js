@@ -75,15 +75,15 @@ module.exports =
 /***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__("D:\\repos\\dev\\tileclick-game\\tileclick-game - Copy\\node_modules\\next\\dist\\pages\\_error.js");
+module.exports = __webpack_require__("D:\\repos\\dev\\tileclick-game\\tileclick-game\\node_modules\\next\\dist\\pages\\_error.js");
 
 
 /***/ }),
 
-/***/ "D:\\repos\\dev\\tileclick-game\\tileclick-game - Copy\\node_modules\\next\\dist\\pages\\_error.js":
+/***/ "D:\\repos\\dev\\tileclick-game\\tileclick-game\\node_modules\\next\\dist\\pages\\_error.js":
 /***/ (function(module, exports) {
 
-module.exports = require("D:\\repos\\dev\\tileclick-game\\tileclick-game - Copy\\node_modules\\next\\dist\\pages\\_error.js");
+module.exports = require("D:\\repos\\dev\\tileclick-game\\tileclick-game\\node_modules\\next\\dist\\pages\\_error.js");
 
 /***/ })
 
