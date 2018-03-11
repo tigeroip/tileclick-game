@@ -106,6 +106,7 @@ io.on("connection", socket => {
                 activeGames[i][j][1] = 0;
                 activeGames[i][secondPlayerPos][1] = 0;
                 helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
+                helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
               else {
@@ -113,6 +114,7 @@ io.on("connection", socket => {
                 activeGames[i][secondPlayerPos][1] = 0;
                 activeGames[i][j][1] = 0;
                 helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
+                helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
             }
@@ -125,6 +127,7 @@ io.on("connection", socket => {
                 activeGames[i][j][1] = 0;
                 activeGames[i][secondPlayerPos][1] = 0;
                 helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
+                helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
               else {
@@ -132,6 +135,7 @@ io.on("connection", socket => {
                 activeGames[i][secondPlayerPos][1] = 0;
                 activeGames[i][j][1] = 0;
                 helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
+                helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
             }

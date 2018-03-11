@@ -19,3 +19,7 @@ exports.sendNewTilePosition = (playerOneId, playerTwoId, io) => {
 exports.sendScore = (playerId, newScore, io) => {
     io.to(playerId).emit('score', {score: newScore})  
 }
+
+exports.sendOpponentScore = (playerId, newScore, io) => {
+    io.to(playerId).emit('score', {opponentscore: newScore})  
+}

@@ -12,14 +12,14 @@ export default class Gameboard extends Component {
         this.state = {
             starttime: null,
             activetile: null,
-            score: 0
+            score: 0,
+            opponentscore: 0
         }
     }
 
     componentDidMount() {
         this.props.socket.emit('ready', true)
         this.props.socket.on('activateboard', (data) => {
-            // this.setState({...data})
             this.setState(function (state, props) {
                 return {
                  ...data
@@ -27,7 +27,11 @@ export default class Gameboard extends Component {
                });
         })
         this.props.socket.on('score', (data) => {
-            this.setState({score: data.score})
+            this.setState(function (state, props) {
+                return {
+                 ...data
+                }
+               });
         })
     }
 
@@ -53,7 +57,7 @@ export default class Gameboard extends Component {
     return (
         <div className="container">
             <ComponentGame starttime={this.state.starttime}/>
-            <ComponentScore score={this.state.score}/>
+            <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore}/>
             <div className="container-tiles">
                 {this.renderTiles()}
             </div>
