@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 import ComponentGame from '../components/game/Game'
 import ComponentTile from '../components/game/Tile'
 import ComponentScore from '../components/game/Score'
-
+import ComponentQuitGame from '../components/game/QuitGame'
 
 
 export default class Gameboard extends Component {
@@ -43,6 +43,10 @@ export default class Gameboard extends Component {
         }
     }
 
+    quitGame() {
+        alert('Are you sure you want to quit?')
+    }
+
     renderTiles() {
         const tiles = [1,2,3,4,5,6,7,8,9];
         return tiles.map((tile) => {
@@ -58,6 +62,7 @@ export default class Gameboard extends Component {
         <div className="container">
             <ComponentGame starttime={this.state.starttime}/>
             <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore}/>
+            <ComponentQuitGame quitgame={this.quitGame}/>
             <div className="container-tiles">
                 {this.renderTiles()}
             </div>
