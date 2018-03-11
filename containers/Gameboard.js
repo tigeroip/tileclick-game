@@ -2,6 +2,8 @@ import { Component } from 'react'
 import io from 'socket.io-client'
 import ComponentGame from '../components/game/Game'
 import ComponentTile from '../components/game/Tile'
+import ComponentScore from '../components/game/Score'
+
 
 
 export default class Gameboard extends Component {
@@ -9,7 +11,8 @@ export default class Gameboard extends Component {
         super(props)
         this.state = {
             starttime: null,
-            activetile: null
+            activetile: null,
+            score: 0
         }
     }
 
@@ -22,7 +25,9 @@ export default class Gameboard extends Component {
                  ...data
                 }
                });
-               console.log(data)
+        })
+        this.props.socket.on('score', (data) => {
+            this.setState({score: data.score})
         })
     }
 
@@ -48,6 +53,7 @@ export default class Gameboard extends Component {
     return (
         <div className="container">
             <ComponentGame starttime={this.state.starttime}/>
+            <ComponentScore score={this.state.score}/>
             <div className="container-tiles">
                 {this.renderTiles()}
             </div>

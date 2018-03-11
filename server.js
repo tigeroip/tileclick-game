@@ -17,8 +17,6 @@ const nextHandler = nextApp.getRequestHandler();
 
 io.on("connection", socket => {
 
-  
-
   socket.on("checkgameinfo", data => {
 
     // if user selectecs to join a game
@@ -78,6 +76,7 @@ io.on("connection", socket => {
     //the total time it took the player to click on a tile from the moment it became active
     let playerDelay = data.hit - data.starttime;
     
+    // initial score, mutates the array
     activeGames.forEach((game, i) => {
      game.forEach((player, j) => {
        if (player === socket.id) {
@@ -86,42 +85,53 @@ io.on("connection", socket => {
      })
     })
 
+    // only works after the first set of playerDelay has been received
+    activeGames.forEach((game, i) => {
+      game.forEach((player, j) => {
+        if (player[0] === socket.id && player[1] === 0) {
+          activeGames[i][j][1] = playerDelay;
+        }
+      })
+    })
+
     // Verifies that both players score has been received
     activeGames.forEach((game, i) => {
       game.forEach((player, j) => {
-        if (player[0] === socket.id && !isNaN(player[1])) {
+        if (player[0] === socket.id && player[1] > 0) {
           if (j === 0) {
             let secondPlayerPos = 1;
-            console.log(activeGames[i]+'\n')
-            if (!isNaN(activeGames[i][secondPlayerPos][1]) && activeGames[i][secondPlayerPos][1] > 0) {
+            if (activeGames[i][secondPlayerPos][1] && activeGames[i][secondPlayerPos][1] > 0) {
               if (player[1] > activeGames[i][secondPlayerPos][1]) {
-                player[2]++;
-                player[1] = 0;
+                activeGames[i][secondPlayerPos][2]++;
+                activeGames[i][j][1] = 0;
                 activeGames[i][secondPlayerPos][1] = 0;
+                helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
               else {
-                activeGames[i][secondPlayerPos][2]++;
+                activeGames[i][j][2]++;
                 activeGames[i][secondPlayerPos][1] = 0;
-                player[1] = 0;
+                activeGames[i][j][1] = 0;
+                helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
             }
           }
           if (j === 1) {
             let secondPlayerPos = 0;
-            console.log(activeGames[i]+'\n')
-            if (!isNaN(activeGames[i][secondPlayerPos][1]) && activeGames[i][secondPlayerPos][1] > 0) {
+            if (activeGames[i][secondPlayerPos][1] && activeGames[i][secondPlayerPos][1] > 0) {
               if (player[1] > activeGames[i][secondPlayerPos][1]) {
-                player[2]++;
-                player[1] = 0;
+                activeGames[i][secondPlayerPos][2]++;
+                activeGames[i][j][1] = 0;
                 activeGames[i][secondPlayerPos][1] = 0;
+                helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
               else {
-                activeGames[i][secondPlayerPos][2]++;
+                activeGames[i][j][2]++;
                 activeGames[i][secondPlayerPos][1] = 0;
-                player[1] = 0;
+                activeGames[i][j][1] = 0;
+                helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
                 helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
               }
             }
@@ -129,51 +139,6 @@ io.on("connection", socket => {
         }
       })
     })
-
-    activeGames.forEach((game, i) => {
-      game.forEach((player, j) => {
-        if (player.length === 3) {
-          if (player[0] === socket.id) {
-            activeGames[i][j][1] = playerDelay;
-          }
-        }
-        if (j === 0) {
-          let secondPlayerPos = 1;
-          if (activeGames[i][secondPlayerPos][1] > 0) {
-            if (player[1] > activeGames[i][secondPlayerPos][1]) {
-              activeGames[i][j][2]++;
-              activeGames[i][j][1] = 0;
-              activeGames[i][secondPlayerPos][1] = 0;
-              helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-            }
-            else {
-              activeGames[i][secondPlayerPos][2]++;
-              activeGames[i][secondPlayerPos][1] = 0;
-              activeGames[i][j][1] = 0;
-              helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-            }
-          }
-        }
-        if (j === 1) {
-          let secondPlayerPos = 0;
-          if (activeGames[i][secondPlayerPos][1] > 0) {
-            if (player[1] > activeGames[i][secondPlayerPos][1]) {
-              activeGames[i][j][2]++;
-              activeGames[i][j][1] = 0;
-              activeGames[i][secondPlayerPos][1] = 0;
-              helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-            }
-            else {
-              activeGames[i][secondPlayerPos][2]++;
-              activeGames[i][secondPlayerPos][1] = 0;
-              activeGames[i][j][1] = 0;
-              helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-            }
-          }
-        }
-      })
-    })
-
   })
   // when client indicates it is ready for the game to begin
   socket.on("ready", data => {
@@ -194,6 +159,7 @@ io.on("connection", socket => {
       helper.sendNewTilePosition(games[index].players[0], games[index].players[1], io)
     }
     })
+
 
 
     // handles cleaning up of the games array when socket disconnects
