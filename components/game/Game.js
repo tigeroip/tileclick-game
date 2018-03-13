@@ -4,7 +4,7 @@ export default class Game extends Component {
         return (
             <header>
                 <div>
-                    <h1>Main Game will start in {this.props.starttime}</h1>
+                    <h1>TileClick</h1>
                 </div>
                 <style jsx>{`
             header {

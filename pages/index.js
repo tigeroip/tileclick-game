@@ -28,7 +28,7 @@ export default class Index extends Component {
         
     const start = () => ( <Welcome socketObj={(path, data) => socket.emit(path, data)} start={() => history.push('/options')}/> )
     const options = () => ( <Options socket={this.socket} socketObj={(path, data) => socket.emit(path, data)} play={() => history.push('/gameboard')} /> )
-    const gameboard = () => ( <Gameboard socket={this.socket} socketObj={(path,data) => socket.emit(path,data)} />)
+    const gameboard = () => ( <Gameboard socket={this.socket} socketObj={(path,data) => socket.emit(path,data)}/>)
 
     return (
       <Router history={history}>

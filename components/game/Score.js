@@ -4,8 +4,18 @@ export default class Score extends Component {
     render () {
         return (
             <div>
-                <p className='score'>Your score: {this.props.score}</p>
-                <p className='score'>Opponent's score: {this.props.opponentscore}</p>
+                <div className="container-score">
+                    <p className='score'>Your score: {this.props.score}</p>
+                    <p className='score'>Opponent's score: {this.props.opponentscore}</p>
+                </div>
+                <style jsx>{`
+                .container-score {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    width: 100%;
+                }
+            `}</style>
             </div>
         )
     }
