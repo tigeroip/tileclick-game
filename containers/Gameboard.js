@@ -12,7 +12,9 @@ export default class Gameboard extends Component {
             starttime: null,
             activetile: null,
             score: 0,
-            opponentscore: 0
+            opponentscore: 0,
+            delay: null,
+            maxactivetiles: 20
         }
     }
 
@@ -36,27 +38,33 @@ export default class Gameboard extends Component {
 
     handleClick = (isActive) => {
         if (isActive == 1) {
-            this.props.socket.emit('score', {starttime : this.state.starttime, hit: Date.now()})
+            let hit = Date.now();
+            let delay = hit - this.state.starttime; 
+            this.props.socket.emit('score', {starttime : this.state.starttime, hit: hit})
             // reset the gameboard
-            this.setState({activetile: null})
+            this.setState((prevState)=> {
+                return {activetile: null, delay : delay, maxactivetiles: prevState.maxactivetiles - 1}
+            })
         }
     }
 
     renderTiles() {
-        const tiles = [1,2,3,4,5,6,7,8,9];
-        return tiles.map((tile) => {
-            if (this.state.activetile === tile)
-                return <ComponentTile key={tile} className="active" handleClick={this.handleClick} active={1}/>
-            else
-                return <ComponentTile key={tile} active={0}/>
-        })
+        if (this.state.maxactivetiles > 0) {
+            const tiles = [1,2,3,4,5,6,7,8,9];
+            return tiles.map((tile) => {
+                if (this.state.activetile === tile)
+                    return <ComponentTile key={tile} className="active" handleClick={this.handleClick} active={1}/>
+                else
+                    return <ComponentTile key={tile} active={0}/>
+            })
+        }
     }
 
   render () {
     return (
         <div className="container">
             <ComponentGame starttime={this.state.starttime}/>
-            <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore}/>
+            <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore} tilesleft={this.state.maxactivetiles} delay={this.state.delay}/>
             <div className="container-tiles">
                 {this.renderTiles()}
             </div>
