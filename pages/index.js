@@ -2,6 +2,7 @@ import { Component } from 'react'
 import Welcome from '../containers/Welcome'
 import Options from '../containers/Options'
 import Gameboard from '../containers/Gameboard'
+import Postgame from '../containers/Postgame'
 import io from 'socket.io-client'
 import {browserHistory, Router, Route} from 'react-router'
 import {createMemoryHistory} from 'history'
@@ -28,7 +29,8 @@ export default class Index extends Component {
         
     const start = () => ( <Welcome socketObj={(path, data) => socket.emit(path, data)} start={() => history.push('/options')}/> )
     const options = () => ( <Options socket={this.socket} socketObj={(path, data) => socket.emit(path, data)} play={() => history.push('/gameboard')} /> )
-    const gameboard = () => ( <Gameboard socket={this.socket} socketObj={(path,data) => socket.emit(path,data)}/>)
+    const gameboard = () => ( <Gameboard socket={this.socket} socketObj={(path,data) => socket.emit(path,data)} postGame={() => history.push('/postgame')}/>)
+    const postgame = () => ( <Postgame socket={this.socket} socketObj={(path,data) => socket.emit(path,data)}/>)
 
     return (
       <Router history={history}>
@@ -36,6 +38,7 @@ export default class Index extends Component {
           <Route exact path="/" render={start}/>
           <Route path="/options" component={options}/>
           <Route path="/gameboard" component={gameboard}/>
+          <Route path="/postgame" component={postgame}/>
           <style global jsx>{`
             html {
               margin: 0;

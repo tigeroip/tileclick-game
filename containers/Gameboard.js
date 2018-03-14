@@ -58,6 +58,9 @@ export default class Gameboard extends Component {
                     return <ComponentTile key={tile} active={0}/>
             })
         }
+        else {
+            this.props.postGame();
+        }
     }
 
   render () {
