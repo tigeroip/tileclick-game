@@ -19,7 +19,7 @@ const socket = io(serverpath)
 
 export default class Index extends Component {
 
-    componentDidMount () {
+    componentWillMount () {
       this.socket = socket;
     }
 
@@ -27,10 +27,10 @@ export default class Index extends Component {
   render () {
             
         
-    const start = () => ( <Welcome socketObj={(path, data) => socket.emit(path, data)} start={() => history.push('/options')}/> )
-    const options = () => ( <Options socket={this.socket} socketObj={(path, data) => socket.emit(path, data)} play={() => history.push('/gameboard')} /> )
-    const gameboard = () => ( <Gameboard socket={this.socket} socketObj={(path,data) => socket.emit(path,data)} postGame={() => history.push('/postgame')}/>)
-    const postgame = () => ( <Postgame socket={this.socket} socketObj={(path,data) => socket.emit(path,data)}/>)
+    const start = () => ( <Welcome socket={this.socket} start={() => history.push('/options')}/> )
+    const options = () => ( <Options socket={this.socket} play={() => history.push('/gameboard')} /> )
+    const gameboard = () => ( <Gameboard socket={this.socket} postGame={() => history.push('/postgame')}/>)
+    const postgame = () => ( <Postgame socket={this.socket}/>)
 
     return (
       <Router history={history}>

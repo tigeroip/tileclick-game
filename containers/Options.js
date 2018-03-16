@@ -46,7 +46,7 @@ export default class Options extends Component {
                 this.setState({formerror: 'Please select to join or create a game and not both'})
         }
         else if ((this.state.gamename.length > 0) && (this.state.playername.length > 0) && (this.state.joingame && !this.state.newgame || !this.state.joingame && this.state.newgame)){
-            this.props.socketObj('checkgameinfo', {
+            this.props.socket.emit('checkgameinfo', {
                                             playername:this.state.playername,
                                             gamename:this.state.gamename,
                                             newgame: this.state.newgame,

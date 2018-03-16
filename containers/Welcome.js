@@ -1,12 +1,12 @@
 import { Component } from 'react'
+import io from 'socket.io-client'
 import ComponentWelcome from '../components/Welcome'
 
 
 export default class Welcome extends Component {
-  
 
   start = () => {
-    this.props.socketObj('start', Date.now())
+    this.props.socket.emit('start', Date.now()) 
     this.props.start()
   }
   render () {

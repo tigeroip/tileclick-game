@@ -11,6 +11,7 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const nextHandler = nextApp.getRequestHandler();
 
+    const MAXTILES = 5; // max amount of activated tiles per game
     let games = new Array();
     let activeGames = new Array();
 
@@ -105,17 +106,22 @@ io.on("connection", socket => {
                 activeGames[i][secondPlayerPos][2]++;
                 activeGames[i][j][1] = 0;
                 activeGames[i][secondPlayerPos][1] = 0;
-                helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
-                helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                //dont activate more tiles than specified in the MAXTILES
+                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
+                  helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
+                  helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
+                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                }
               }
               else {
                 activeGames[i][j][2]++;
                 activeGames[i][secondPlayerPos][1] = 0;
                 activeGames[i][j][1] = 0;
-                helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
-                helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
+                  helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
+                  helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
+                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                }
               }
             }
           }
@@ -126,17 +132,21 @@ io.on("connection", socket => {
                 activeGames[i][secondPlayerPos][2]++;
                 activeGames[i][j][1] = 0;
                 activeGames[i][secondPlayerPos][1] = 0;
-                helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
-                helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
+                  helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
+                  helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
+                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                }
               }
               else {
                 activeGames[i][j][2]++;
                 activeGames[i][secondPlayerPos][1] = 0;
                 activeGames[i][j][1] = 0;
-                helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
-                helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
+                  helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
+                  helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
+                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
+                }
               }
             }
           }
@@ -164,6 +174,65 @@ io.on("connection", socket => {
     }
     })
 
+    socket.on('postgame', (data) => {
+      activeGames.forEach((game, i) => {
+        game.forEach((player, index) => {
+          if (player[0] === socket.id) {
+            if (index === 1) {
+              // if player's score is greater than opponent's score
+              if (player[2] > activeGames[i][0][2]) {
+                socket.emit('postgame', {winner:1, score:player[2]})
+              }
+              // if player's score is lower than opponent's score
+              if (player[2] < activeGames[i][0][2]) {
+                socket.emit('postgame', {winner:0, score:player[2]})
+              }
+              // if game is a tie
+              if (player[2] === activeGames[i][0][2]) {
+                socket.emit('postgame', {winner:2, score:player[2]})
+              }
+            }
+            if (index === 0) {
+              // if player's score is greater than opponent's score
+              if (player[2] > activeGames[i][1][2]) {
+                socket.emit('postgame', {winner:1, score:player[2]})
+              }
+              // if player's score is lower than opponent's score
+              if (player[2] < activeGames[i][1][2]) {
+                socket.emit('postgame', {winner:0, score:player[2]})
+              }
+              // if game is a tie
+              if (player[2] === activeGames[i][1][2]) {
+                socket.emit('postgame', {winner:2, score:player[2]})
+              }
+            }
+          }
+        })
+      })
+    })
+
+socket.on('gamefinished', (data) => {
+ if (data === true) {
+  activeGames.forEach((game, i) => {
+   game.forEach((player, index) => {
+    if (player[0] === socket.id) {
+     if (index === 1) {
+      if ((player[2] + activeGames[i][0][2]) == MAXTILES) {
+        console.log(player[2] + activeGames[i][0][2])
+        socket.emit('gamefinished', {gotopostgame: true})
+      }  
+     }
+     if (index === 0) {
+      if ((player[2] + activeGames[i][1][2]) == MAXTILES) {
+        console.log(player[2] + activeGames[i][1][2])
+        socket.emit('gamefinished', {gotopostgame: true})
+      }  
+     }
+    }
+   })
+  })
+ }
+})
 
 
     // handles cleaning up of the games array when socket disconnects

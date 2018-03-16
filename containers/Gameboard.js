@@ -14,12 +14,15 @@ export default class Gameboard extends Component {
             score: 0,
             opponentscore: 0,
             delay: null,
-            maxactivetiles: 20
+            maxactivetiles: 5
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.props.socket.emit('ready', true)
+    }
+
+    componentDidMount() {
         this.props.socket.on('activateboard', (data) => {
             this.setState(function (state, props) {
                 return {
@@ -34,6 +37,19 @@ export default class Gameboard extends Component {
                 }
                });
         })
+        this.props.socket.on('gamefinished', (data) => {
+            if (data.gotopostgame === true) this.postGame();
+        })
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (nextState.maxactivetiles === 0) {
+            this.props.socket.emit('gamefinished', true)
+        }     
+    }
+
+    postGame = () => {
+        this.props.postGame()
     }
 
     handleClick = (isActive) => {
@@ -43,13 +59,15 @@ export default class Gameboard extends Component {
             this.props.socket.emit('score', {starttime : this.state.starttime, hit: hit})
             // reset the gameboard
             this.setState((prevState)=> {
-                return {activetile: null, delay : delay, maxactivetiles: prevState.maxactivetiles - 1}
+                if (prevState.maxactivetiles != 0) {
+                 return {activetile: null, delay : delay, maxactivetiles: prevState.maxactivetiles - 1}
+                }
             })
         }
     }
 
     renderTiles() {
-        if (this.state.maxactivetiles > 0) {
+        // if (this.state.maxactivetiles > 0) {
             const tiles = [1,2,3,4,5,6,7,8,9];
             return tiles.map((tile) => {
                 if (this.state.activetile === tile)
@@ -57,10 +75,6 @@ export default class Gameboard extends Component {
                 else
                     return <ComponentTile key={tile} active={0}/>
             })
-        }
-        else {
-            this.props.postGame();
-        }
     }
 
   render () {

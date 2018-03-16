@@ -5,8 +5,8 @@ export default class PostGame extends Component {
     constructor(props){
         super(props)
         this.state = {
-            winner: null,
-            score: null
+            winner: 0,
+            score: 0
         }
     }
     componentDidMount() {
@@ -19,13 +19,15 @@ export default class PostGame extends Component {
                });
         })
     }
-
     renderGameInfo() {
-        if (this.state.winner === true) {
-            return (<p className="winner">You Won!</p>, <p className="score">Your score: {this.state.score}</p>)
+        if (this.state.winner === 1) {
+            return <p className="winner">You Won!</p>
         }
-        if (this.state.winner === false) {
-            return (<p className="loser">You Lost</p>, <p className="score">Your score: {this.state.score}</p>)
+        if (this.state.winner === 0) {
+            return <p className="loser">You Lost</p>
+        }
+        if (this.state.winner === 2) {
+            return <p className="tie">The game is a tie</p>
         }
     }
 
@@ -33,6 +35,7 @@ export default class PostGame extends Component {
         return (
             <div className="container">
                 {this.renderGameInfo()}
+                <p className="score">Your score: {this.state.score}</p>
             </div>
         )
     }
