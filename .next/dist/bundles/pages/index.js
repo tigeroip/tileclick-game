@@ -874,13 +874,18 @@ var PostGame = function (_Component) {
             }
         }
     }, {
+        key: 'playAgain',
+        value: function playAgain() {
+            window.location.reload();
+        }
+    }, {
         key: 'render',
         value: function render() {
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 { className: 'container', __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 36
+                        lineNumber: 39
                     }
                 },
                 this.renderGameInfo(),
@@ -888,11 +893,20 @@ var PostGame = function (_Component) {
                     'p',
                     { className: 'score', __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 38
+                            lineNumber: 41
                         }
                     },
                     'Your score: ',
                     this.state.score
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
+                    { onClick: this.playAgain, __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 42
+                        }
+                    },
+                    'Play Again?'
                 )
             );
         }

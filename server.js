@@ -217,14 +217,12 @@ socket.on('gamefinished', (data) => {
    game.forEach((player, index) => {
     if (player[0] === socket.id) {
      if (index === 1) {
-      if ((player[2] + activeGames[i][0][2]) == MAXTILES) {
-        console.log(player[2] + activeGames[i][0][2])
+      if ((player[2] + activeGames[i][0][2]) === MAXTILES) {
         socket.emit('gamefinished', {gotopostgame: true})
       }  
      }
      if (index === 0) {
-      if ((player[2] + activeGames[i][1][2]) == MAXTILES) {
-        console.log(player[2] + activeGames[i][1][2])
+      if ((player[2] + activeGames[i][1][2]) === MAXTILES) {
         socket.emit('gamefinished', {gotopostgame: true})
       }  
      }

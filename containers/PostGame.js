@@ -30,12 +30,16 @@ export default class PostGame extends Component {
             return <p className="tie">The game is a tie</p>
         }
     }
+    playAgain() {
+        window.location.reload()
+    }
 
     render () {
         return (
             <div className="container">
                 {this.renderGameInfo()}
                 <p className="score">Your score: {this.state.score}</p>
+                <button onClick={this.playAgain}>Play Again?</button>
             </div>
         )
     }
