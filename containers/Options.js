@@ -58,29 +58,32 @@ export default class Options extends Component {
 
   render () {
     return (
-            <main className="banner">
-                <div>
+                <div className="container-main-content">
                     <h1>Your Info</h1>
                     <p>{this.state.formerror}</p>
                     <form onSubmit={this.handleSubmit}>
                         <input onChange={this.onChange} name="playername" placeholder="Your Name"/>
-                        <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" placeholder="enter"  />
-                        <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" placeholder="enter"  />
+                        <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" placeholder="enter" id="joingame"/>
+                        <label for="joingame">Join Game</label>
+                        <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" placeholder="enter" id="newgame"/>
+                        <label for="newgame">New Game</label>
                         <input onChange={this.onChange} name="gamename" placeholder="Game Name"/>
                         <button type="submit">Go</button>
                     </form>
-                </div>
-                <style jsx>{`
-                    .banner {
-                      display: block;
-                      width: 600px;
-                      margin: 0;
-                      background: #03A9F4 !important;
-                      position: absolute;
-                      text-align: center;
+                    <style jsx>{`
+                    .container-main-content {
+                        margin: 0;
+                        text-align: center;
+                        background: #03A9F4;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
                     }
                   `}</style>
-            </main>
+                </div>
     )
   }
 }

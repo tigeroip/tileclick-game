@@ -11,8 +11,19 @@ export default class Welcome extends Component {
   }
   render () {
     return (
-        <div className="container">
+        <div className="container-welcome">
             <ComponentWelcome start={this.start}/>
+            <style jsx>{`
+                    .container-welcome {
+                      display: block;
+                      width: 100%;
+                      margin: 0;
+                      background: #03A9F4;
+                      text-align: center;
+                      height: 100%;
+                      border-radius: 10px;
+                    }
+                  `}</style>
         </div>
     )
   }
