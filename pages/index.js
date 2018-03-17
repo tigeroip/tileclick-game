@@ -35,6 +35,7 @@ export default class Index extends Component {
     return (
       <Router history={history}>
         <div className="container-main">
+          <div className="banner"/>
           <Route exact path="/" render={start}/>
           <Route path="/options" component={options}/>
           <Route path="/gameboard" component={gameboard}/>
@@ -87,7 +88,7 @@ export default class Index extends Component {
             width: 100%;
           }
             body {
-              background: #eee;
+              background: #aaaaaa;
             }
             #__next {
               margin: 0;
@@ -101,6 +102,10 @@ export default class Index extends Component {
               height: 400px;
               width: 90%;
               max-width: 400px;
+            }
+            .banner {
+              height: 20px;
+              background-color: #1976d2;
             }
           `}</style>
         </div>

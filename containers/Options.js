@@ -58,30 +58,38 @@ export default class Options extends Component {
 
   render () {
     return (
-                <div className="container-main-content">
-                    <h1>Your Info</h1>
+                <div className="container-options">
+                    <div className="header"><p className="header-text">Options</p></div>
                     <p>{this.state.formerror}</p>
                     <form onSubmit={this.handleSubmit}>
                         <input onChange={this.onChange} name="playername" placeholder="Your Name"/>
-                        <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" placeholder="enter" id="joingame"/>
-                        <label for="joingame">Join Game</label>
-                        <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" placeholder="enter" id="newgame"/>
-                        <label for="newgame">New Game</label>
                         <input onChange={this.onChange} name="gamename" placeholder="Game Name"/>
+                        <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" placeholder="enter" id="joingame"/>
+                        <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" placeholder="enter" id="newgame"/>
+                        <label for="joingame">Join Game</label>
+                        <label for="newgame">New Game</label>
                         <button type="submit">Go</button>
                     </form>
                     <style jsx>{`
-                    .container-main-content {
+                    .container-options {
                         margin: 0;
                         text-align: center;
-                        background: #03A9F4;
+                        background: #c0c3c6;
                         width: 100%;
                         height: 100%;
+                    }
+                    .header {
+                        height: 40px;
+                        background-color: #2196f3;
                         display: flex;
-                        flex-direction: column;
                         align-items: center;
                         justify-content: center;
-                    }
+                      }
+                      .header-text {
+                        color: #fff;
+                        font-size: 21px;
+                        font-weight: 600;
+                      }
                   `}</style>
                 </div>
     )
