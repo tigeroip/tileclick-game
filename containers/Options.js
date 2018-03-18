@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import io from 'socket.io-client'
+import Head from 'next/head'
 
 export default class Options extends Component {
     constructor(props) {
@@ -59,15 +60,28 @@ export default class Options extends Component {
   render () {
     return (
                 <div className="container-options">
+                    <Head>
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css"/>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"/>
+                    </Head>
                     <div className="header"><p className="header-text">Options</p></div>
                     <p>{this.state.formerror}</p>
                     <form onSubmit={this.handleSubmit}>
-                        <input onChange={this.onChange} name="playername" placeholder="Your Name"/>
+                    <div className="input-field">
+                        <input id="playername" onChange={this.onChange} name="playername" placeholder="Your Name" type="text"/>
+                        <label htmlFor="playername">Join Game</label>
+                    </div>
+                    <div className="input-field col s6">
+          <input placeholder="Placeholder" id="firstname" type="text" className="validate"/>
+          <label htmlFor="firstname">First Name</label>
+        </div>
+                    <div className="input-field">
                         <input onChange={this.onChange} name="gamename" placeholder="Game Name"/>
+                    </div>
                         <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" placeholder="enter" id="joingame"/>
                         <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" placeholder="enter" id="newgame"/>
-                        <label for="joingame">Join Game</label>
-                        <label for="newgame">New Game</label>
+                        <label htmlFor="joingame">Join Game</label>
+                        <label htmlFor="newgame">New Game</label>
                         <button type="submit">Go</button>
                     </form>
                     <style jsx>{`
