@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import io from 'socket.io-client'
-import Head from 'next/head'
+
 
 export default class Options extends Component {
     constructor(props) {
@@ -60,29 +60,26 @@ export default class Options extends Component {
   render () {
     return (
                 <div className="container-options">
-                    <Head>
-                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css"/>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"/>
-                    </Head>
                     <div className="header"><p className="header-text">Options</p></div>
-                    <p>{this.state.formerror}</p>
+                    <p className="form-error">{this.state.formerror}</p>
                     <form onSubmit={this.handleSubmit}>
                     <div className="input-field">
-                        <input id="playername" onChange={this.onChange} name="playername" placeholder="Your Name" type="text"/>
-                        <label htmlFor="playername">Join Game</label>
+                        <input id="playername" onChange={this.onChange} name="playername" type="text"/>
+                        <label htmlFor="playername">Your Name</label>
                     </div>
-                    <div className="input-field col s6">
-          <input placeholder="Placeholder" id="firstname" type="text" className="validate"/>
-          <label htmlFor="firstname">First Name</label>
-        </div>
                     <div className="input-field">
-                        <input onChange={this.onChange} name="gamename" placeholder="Game Name"/>
+                        <input id="gamename" onChange={this.onChange} name="gamename" type="text"/>
+                        <label htmlFor="gamename">Game Name</label>
                     </div>
-                        <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" placeholder="enter" id="joingame"/>
-                        <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" placeholder="enter" id="newgame"/>
+                    <div>
+                        <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" id="joingame"/>
                         <label htmlFor="joingame">Join Game</label>
+                    </div>
+                    <div>
+                        <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" id="newgame"/>
                         <label htmlFor="newgame">New Game</label>
-                        <button type="submit">Go</button>
+                    </div>
+                        <button className="waves-effect waves-light btn-large" type="submit">Go</button>
                     </form>
                     <style jsx>{`
                     .container-options {
@@ -103,6 +100,9 @@ export default class Options extends Component {
                         color: #fff;
                         font-size: 21px;
                         font-weight: 600;
+                      }
+                      .form-error {
+                          color: #F44336;
                       }
                   `}</style>
                 </div>

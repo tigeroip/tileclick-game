@@ -6,6 +6,7 @@ import Postgame from '../containers/Postgame'
 import io from 'socket.io-client'
 import {browserHistory, Router, Route} from 'react-router'
 import {createMemoryHistory} from 'history'
+import Head from 'next/head'
 
 
 var location = {};
@@ -34,7 +35,16 @@ export default class Index extends Component {
 
     return (
       <Router history={history}>
+                          
         <div className="container-main">
+          <Head>
+          <title>Tile Click Game</title>
+            <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+            <link rel="stylesheet" href="/static/css/materialize.min.css"/>
+            <script src="/static/js/jquery-3.3.1.min.js"/>
+            <script src="/static/js/materialize.min.js"/>
+          </Head>
           <div className="banner"/>
           <Route exact path="/" render={start}/>
           <Route path="/options" component={options}/>

@@ -7,10 +7,11 @@ class Tile extends Component {
           <div className={this.props.className} onClick={() => this.props.handleClick(this.props.active)}></div>
           <style jsx>{`
       .tile {
-        margin: 1px;
+        border: 1px solid white;
         background: #03A9F4;
-        height: 95px;
-        width: 164px;
+        height: 33%;
+        width: 33%;
+        margin: 0;
     }
     
     .active {
