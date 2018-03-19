@@ -93,6 +93,7 @@ export default class Gameboard extends Component {
                     width: 100%;
                     display: flex;
                     flex-direction: column;
+                    background-color: #ffffff;
                 }
                 .container-tiles {
                     display: flex;
@@ -101,6 +102,7 @@ export default class Gameboard extends Component {
                     align-items: center;
                     margin: 35px auto 0;
                     flex-wrap: wrap;
+                    justify-content: center;
                 }
                 .active {
                     background: red !important;

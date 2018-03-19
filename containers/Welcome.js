@@ -19,13 +19,13 @@ export default class Welcome extends Component {
                       display: block;
                       width: 100%;
                       margin: 0;
-                      background: #c0c3c6;
+                      background: #ffffff;
                       text-align: center;
                       height: 100%;
                     }
                     .header {
                       height: 40px;
-                      background-color: #2196f3;
+                      background-color: #3661B0;
                       display: flex;
                       align-items: center;
                       justify-content: center;

@@ -71,11 +71,11 @@ export default class Options extends Component {
                         <input id="gamename" onChange={this.onChange} name="gamename" type="text"/>
                         <label htmlFor="gamename">Game Name</label>
                     </div>
-                    <div>
+                    <div className="form-checkbox">
                         <input onChange={this.onChange} checked={this.state.joingame} type="checkbox" name="joingame" id="joingame"/>
                         <label htmlFor="joingame">Join Game</label>
                     </div>
-                    <div>
+                    <div className="form-checkbox">
                         <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" id="newgame"/>
                         <label htmlFor="newgame">New Game</label>
                     </div>
@@ -85,13 +85,13 @@ export default class Options extends Component {
                     .container-options {
                         margin: 0;
                         text-align: center;
-                        background: #c0c3c6;
+                        background: #ffffff;
                         width: 100%;
                         height: 100%;
                     }
                     .header {
                         height: 40px;
-                        background-color: #2196f3;
+                        background-color: #3661B0;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -103,6 +103,14 @@ export default class Options extends Component {
                       }
                       .form-error {
                           color: #F44336;
+                          margin: 15px 0 0 0;
+                      }
+                      form {
+                        width: 90%;
+                        margin: 40px auto 0;
+                      }
+                      .form-checkbox {
+                        margin: 5px 0;
                       }
                   `}</style>
                 </div>

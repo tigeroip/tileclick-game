@@ -45,7 +45,6 @@ export default class Index extends Component {
             <script src="/static/js/jquery-3.3.1.min.js"/>
             <script src="/static/js/materialize.min.js"/>
           </Head>
-          <div className="banner"/>
           <Route exact path="/" render={start}/>
           <Route path="/options" component={options}/>
           <Route path="/gameboard" component={gameboard}/>
@@ -112,10 +111,6 @@ export default class Index extends Component {
               height: 400px;
               width: 90%;
               max-width: 400px;
-            }
-            .banner {
-              height: 20px;
-              background-color: #1976d2;
             }
           `}</style>
         </div>

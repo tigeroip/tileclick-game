@@ -4,11 +4,11 @@ export default class Game extends Component {
         return (
             <header>
                 <div>
-                    <h1>TileClick</h1>
+                    <h1 className="title-text">TileClick</h1>
                 </div>
                 <style jsx>{`
             header {
-                background: grey;
+                background: #3661B0;
                 line-height: 1;
                 text-align: center;
                 font-size: 16px;
@@ -16,6 +16,14 @@ export default class Game extends Component {
                 padding: 0;
                 width: 100%;
                 height: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .title-text {
+                color: #fff;
+                font-size: 21px;
+                font-weight: 600;
             }
     `}</style>
             </header>
