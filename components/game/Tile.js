@@ -9,9 +9,10 @@ class Tile extends Component {
       .tile {
         border: 1px solid white;
         background: #03A9F4;
-        height: 33%;
-        width: 33%;
+        height: 32%;
+        width: 32%;
         margin: 0;
+        box-sizing: content-box;
     }
     
     .active {

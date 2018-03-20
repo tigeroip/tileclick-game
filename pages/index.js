@@ -111,6 +111,7 @@ export default class Index extends Component {
               height: 400px;
               width: 90%;
               max-width: 400px;
+              background-color: #ffffff;
             }
           `}</style>
         </div>

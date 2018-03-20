@@ -20,14 +20,27 @@ export default class PostGame extends Component {
         })
     }
     renderGameInfo() {
+        let headerStyle = {
+            height: '60px',
+            width: '100%',
+            backgroundColor: '#3661B0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          };
+        let headerText = {
+            color: '#fff',
+            fontSize: '21px',
+            fontWeight: '600'
+        }
         if (this.state.winner === 1) {
-            return <p className="winner">You Won!</p>
+            return <div style={headerStyle}><p style={headerText}>You Won!</p></div>
         }
         if (this.state.winner === 0) {
-            return <p className="loser">You Lost</p>
+            return <div style={headerStyle}><p style={headerText}>You Lost</p></div>
         }
         if (this.state.winner === 2) {
-            return <p className="tie">The game is a tie</p>
+            return <div style={headerStyle}><p style={headerText}>The game is a tie</p></div>
         }
     }
     playAgain() {
@@ -38,8 +51,36 @@ export default class PostGame extends Component {
         return (
             <div className="container">
                 {this.renderGameInfo()}
-                <p className="score">Your score: {this.state.score}</p>
-                <button onClick={this.playAgain}>Play Again?</button>
+            <div className="main">
+                <div className="container-score">
+                    <p className="score">Your score: {this.state.score}</p>
+                </div>
+                <div className="container-button">
+                    <button className="waves-effect waves-light btn-large" onClick={this.playAgain}>Play Again?</button>
+                </div>
+            </div>
+                <style jsx>{`
+                    .container {
+                        background-color: #ffffff;
+                        width: 100%;
+                        margin: 0;
+                        height: 100%;
+                    }
+                    .main {
+                        height: 340px;
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .container-score, .container-button {
+                        margin: 40px 0;
+                    }
+                    .score {
+                        font-size: 28px;
+                    }
+                `}</style>
             </div>
         )
     }

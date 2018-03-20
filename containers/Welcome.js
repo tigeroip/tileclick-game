@@ -24,7 +24,7 @@ export default class Welcome extends Component {
                       height: 100%;
                     }
                     .header {
-                      height: 40px;
+                      height: 60px;
                       background-color: #3661B0;
                       display: flex;
                       align-items: center;

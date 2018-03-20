@@ -79,7 +79,7 @@ export default class Options extends Component {
                         <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" id="newgame"/>
                         <label htmlFor="newgame">New Game</label>
                     </div>
-                        <button className="waves-effect waves-light btn-large" type="submit">Go</button>
+                        <button className="margin-top waves-effect waves-light btn-large" type="submit">Go</button>
                     </form>
                     <style jsx>{`
                     .container-options {
@@ -87,10 +87,10 @@ export default class Options extends Component {
                         text-align: center;
                         background: #ffffff;
                         width: 100%;
-                        height: 100%;
+                        height: 400px;
                     }
                     .header {
-                        height: 40px;
+                        height: 60px;
                         background-color: #3661B0;
                         display: flex;
                         align-items: center;
@@ -107,10 +107,13 @@ export default class Options extends Component {
                       }
                       form {
                         width: 90%;
-                        margin: 40px auto 0;
+                        margin: 15px auto 0;
                       }
                       .form-checkbox {
                         margin: 5px 0;
+                      }
+                      .margin-top {
+                          margin-top: 10px;
                       }
                   `}</style>
                 </div>

@@ -103,6 +103,7 @@ export default class Gameboard extends Component {
                     margin: 35px auto 0;
                     flex-wrap: wrap;
                     justify-content: center;
+                    padding: 10px;
                 }
                 .active {
                     background: red !important;
