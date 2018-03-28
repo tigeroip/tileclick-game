@@ -11,7 +11,7 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const nextHandler = nextApp.getRequestHandler();
 
-    const MAXTILES = 5; // max amount of activated tiles per game
+    const MAXTILES = 20; // max amount of activated tiles per game
     let games = new Array();
     let activeGames = new Array();
 
