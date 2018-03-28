@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import io from 'socket.io-client'
 
-export default class PostGame extends Component {
+export default class Postgame extends Component {
     constructor(props){
         super(props)
         this.state = {
