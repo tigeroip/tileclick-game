@@ -74,17 +74,22 @@ io.on("connection", socket => {
   socket.on("score", data => {
     //the total time it took the player to click on a tile from the moment it became active
     let playerDelay = data.hit - data.starttime;
+    let playerTwoDelay;
+    let gameIndex;
+    let playerOneIndex;
+    let playerTwoIndex;
+    let isPlayerTwoDelayReceived = false;
     
-    // initial score, mutates the array
+    // initial score and delay
     activeGames.forEach((game, i) => {
      game.forEach((player, j) => {
        if (player === socket.id) {
-         activeGames[i][j] = [socket.id, playerDelay, 0]
+         activeGames[i][j] = [socket.id, 0, 0]
        }
      })
     })
 
-    // only works after the first set of playerDelay has been received
+    //insert playerDelay to the corresponding player
     activeGames.forEach((game, i) => {
       game.forEach((player, j) => {
         if (player[0] === socket.id && player[1] === 0) {
@@ -93,64 +98,60 @@ io.on("connection", socket => {
       })
     })
 
-    // Verifies that both players score has been received
     activeGames.forEach((game, i) => {
       game.forEach((player, j) => {
+        //find current player in the game array
         if (player[0] === socket.id && player[1] > 0) {
+          //if current player is before second player
+          gameIndex = i
+          playerOneIndex = j
+
           if (j === 0) {
-            let secondPlayerPos = 1;
-            if (activeGames[i][secondPlayerPos][1] && activeGames[i][secondPlayerPos][1] > 0) {
-              if (player[1] > activeGames[i][secondPlayerPos][1]) {
-                activeGames[i][secondPlayerPos][2]++;
-                activeGames[i][j][1] = 0;
-                activeGames[i][secondPlayerPos][1] = 0;
-                //dont activate more tiles than specified in the MAXTILES
-                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
-                  helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
-                  helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-                }
-              }
-              else {
-                activeGames[i][j][2]++;
-                activeGames[i][secondPlayerPos][1] = 0;
-                activeGames[i][j][1] = 0;
-                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
-                  helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                  helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
-                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-                }
-              }
-            }
+            playerTwoIndex = 1;
           }
           if (j === 1) {
-            let secondPlayerPos = 0;
-            if (activeGames[i][secondPlayerPos][1] && activeGames[i][secondPlayerPos][1] > 0) {
-              if (player[1] > activeGames[i][secondPlayerPos][1]) {
-                activeGames[i][secondPlayerPos][2]++;
-                activeGames[i][j][1] = 0;
-                activeGames[i][secondPlayerPos][1] = 0;
-                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
-                  helper.sendScore(activeGames[i][secondPlayerPos][0], activeGames[i][secondPlayerPos][2], io);
-                  helper.sendOpponentScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-                }
-              }
-              else {
-                activeGames[i][j][2]++;
-                activeGames[i][secondPlayerPos][1] = 0;
-                activeGames[i][j][1] = 0;
-                if ((activeGames[i][secondPlayerPos][2] + activeGames[i][j][2]) <= MAXTILES) {
-                  helper.sendScore(activeGames[i][j][0], activeGames[i][secondPlayerPos][2], io);
-                  helper.sendOpponentScore(activeGames[i][secondPlayerPos][0], activeGames[i][j][2], io);
-                  helper.sendNewTilePosition(player[0], activeGames[i][secondPlayerPos][0], io)
-                }
-              }
-            }
+            playerTwoIndex = 0;
           }
         }
       })
     })
+    //check if opposing player's delay has been received
+    if (activeGames[gameIndex][playerTwoIndex][1] !== undefined) {
+      if (activeGames[gameIndex][playerTwoIndex][1] > 0) {
+        isPlayerTwoDelayReceived = true;
+      }
+    }
+
+    if (isPlayerTwoDelayReceived === true) {
+      //check which player wins; lower delay = winner
+      let playerOneDelay = activeGames[gameIndex][playerOneIndex][1]
+      let playerTwoDelay = activeGames[gameIndex][playerTwoIndex][1]
+
+      if (playerOneDelay > playerTwoDelay) {
+        //player two wins the round
+        activeGames[gameIndex][playerTwoIndex][2]++
+        activeGames[gameIndex][playerTwoIndex][1] = 0
+        activeGames[gameIndex][playerOneIndex][1] = 0
+        //Prevent activation of more tiles than specified by MAXTILES
+        if ((activeGames[gameIndex][playerTwoIndex][2] + activeGames[gameIndex][playerOneIndex][2]) <= MAXTILES) {
+          helper.sendScore(activeGames[gameIndex][playerTwoIndex][0], activeGames[gameIndex][playerTwoIndex][2], io)
+          helper.sendOpponentScore(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerTwoIndex][2], io)
+          helper.sendNewTilePosition(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerTwoIndex][0], io)
+        }
+      }
+      if (playerOneDelay < playerTwoDelay) {
+        //player one wins the round
+        activeGames[gameIndex][playerOneIndex][2]++
+        activeGames[gameIndex][playerOneIndex][1] = 0
+        activeGames[gameIndex][playerTwoIndex][1] = 0
+        if ((activeGames[gameIndex][playerTwoIndex][2] + activeGames[gameIndex][playerOneIndex][2]) <= MAXTILES) {
+          helper.sendScore(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerOneIndex][2], io)
+          helper.sendOpponentScore(activeGames[gameIndex][playerTwoIndex][0], activeGames[gameIndex][playerOneIndex][2], io)
+          helper.sendNewTilePosition(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerTwoIndex][0], io)
+        }
+      }
+    }
+
   })
   // when client indicates it is ready for the game to begin
   socket.on("ready", data => {
@@ -233,6 +234,8 @@ socket.on('gamefinished', (data) => {
 
     // handles cleaning up of the games array when socket disconnects
   socket.on('disconnect', () => {
+
+    
 
     games.forEach((game, index) => {
       // if only one players disconnects from the game
