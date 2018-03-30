@@ -79,7 +79,7 @@ export default class Options extends Component {
                         <input onChange={this.onChange} checked={this.state.newgame} type="checkbox" name="newgame" id="newgame"/>
                         <label htmlFor="newgame">New Game</label>
                     </div>
-                        <button className="margin-top waves-effect waves-light btn-large" type="submit">Go</button>
+                        <button className="margin-top waves-effect waves-light btn-large" type="submit">Play</button>
                     </form>
                     <style jsx>{`
                     .container-options {

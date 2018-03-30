@@ -13,6 +13,11 @@ export default class Welcome extends Component {
     return (
         <div className="container-welcome">
         <div className="header"><p className="header-text">TileClick</p></div>
+        <div className="container-instructions">
+          <p className="instruction">TileClick is a two player game.</p>
+          <p className="instruction">The player to click the most red tiles wins.</p>
+          <p className="instruction">To play, either create a new game and share the game name with your friend or join an existing game.</p>
+        </div>
             <ComponentWelcome start={this.start}/>
             <style jsx>{`
                     .container-welcome {
@@ -34,6 +39,19 @@ export default class Welcome extends Component {
                       color: #fff;
                       font-size: 21px;
                       font-weight: 600;
+                    }
+                    .container-instructions {
+                      height: 50%;
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      justify-content: center;
+                      width: 100%;
+                    }
+                    .instruction {
+                      margin: 10px 0;
+                      line-height: 20px;
+                      font-size: 16px;
                     }
                   `}</style>
         </div>
