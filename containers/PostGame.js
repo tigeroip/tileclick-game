@@ -6,7 +6,8 @@ export default class Postgame extends Component {
         super(props)
         this.state = {
             winner: 0,
-            score: 0
+            score: 0,
+            waitingforotherplayer: true
         }
     }
     componentDidMount() {
@@ -14,7 +15,7 @@ export default class Postgame extends Component {
         this.props.socket.on('postgame', (data) => {
             this.setState(function (state, props) {
                 return {
-                 ...data
+                 ...data, waitingforotherplayer:false
                 }
                });
         })

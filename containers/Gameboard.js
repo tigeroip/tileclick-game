@@ -14,7 +14,8 @@ export default class Gameboard extends Component {
             score: 0,
             opponentscore: 0,
             delay: null,
-            maxactivetiles: 5
+            maxactivetiles: 10,
+            isloading: true
         }
     }
 
@@ -26,7 +27,7 @@ export default class Gameboard extends Component {
         this.props.socket.on('activateboard', (data) => {
             this.setState(function (state, props) {
                 return {
-                 ...data
+                 ...data, isloading:false
                 }
                });
         })
@@ -67,7 +68,6 @@ export default class Gameboard extends Component {
     }
 
     renderTiles() {
-        // if (this.state.maxactivetiles > 0) {
             const tiles = [1,2,3,4,5,6,7,8,9];
             return tiles.map((tile) => {
                 if (this.state.activetile === tile)
@@ -77,11 +77,23 @@ export default class Gameboard extends Component {
             })
     }
 
+    showLoadingScreen() {
+        return (<div> <p className="loading">Waiting for other player to connect.</p>
+                <style jsx>{`
+                    .loading {
+                        color: red;
+                        text-align: center;
+                    }
+                `}</style>
+                </div>)
+    }
+
+
   render () {
     return (
         <div className="container">
             <ComponentGame starttime={this.state.starttime}/>
-            <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore} tilesleft={this.state.maxactivetiles} delay={this.state.delay}/>
+            {this.state.isloading ? this.showLoadingScreen() : <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore} tilesleft={this.state.maxactivetiles} delay={this.state.delay}/>}
             <div className="container-tiles">
                 {this.renderTiles()}
             </div>
