@@ -19,11 +19,13 @@ export default class Gameboard extends Component {
         }
     }
 
-    componentWillMount() {
-        this.props.socket.emit('ready', true)
-    }
+    // componentWillMount() {
+    //     this.props.socket.emit('ready', true)
+    // }
 
     componentDidMount() {
+        this.props.socket.emit('ready', true)
+
         this.props.socket.on('activateboard', (data) => {
             this.setState(function (state, props) {
                 return {

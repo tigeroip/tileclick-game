@@ -116,11 +116,16 @@ io.on("connection", socket => {
       })
     })
     //check if opposing player's delay has been received
-    if (activeGames[gameIndex][playerTwoIndex][1] !== undefined) {
-      if (activeGames[gameIndex][playerTwoIndex][1] > 0) {
-        isPlayerTwoDelayReceived = true;
+    if (gameIndex !== undefined) {
+      if (playerTwoIndex !== undefined) {
+        if (activeGames[gameIndex][playerTwoIndex][1] !== undefined) {
+          if (activeGames[gameIndex][playerTwoIndex][1] > 0) {
+            isPlayerTwoDelayReceived = true;
+          }
+        }
       }
     }
+
 
     if (isPlayerTwoDelayReceived === true) {
       //check which player wins; lower delay = winner
