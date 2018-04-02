@@ -9,7 +9,7 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const nextHandler = nextApp.getRequestHandler();
 
-    const MAXTILES = 10; // max amount of activated tiles per game
+    const MAXTILES = 5; // max amount of activated tiles per game
     let games = new Array();
     let activeGames = new Map();
 
@@ -93,20 +93,28 @@ io.on("connection", socket => {
         gameData.playerOneScore++;
         gameData.playerOneDelay = 0;
         gameData.playerTwoDelay = 0;
-        if ((gameData.playerOneScore + gameData.playerTwoScore) <= MAXTILES) {
+        if ((gameData.playerOneScore + gameData.playerTwoScore) < MAXTILES) {
           helper.sendScore(gameData.playerOneSocketId, gameData.playerOneScore, io);
           helper.sendOpponentScore(gameData.playerTwoSocketId, gameData.playerOneScore, io);
-          setTimeout(() =>helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io) ,Math.random() * (5000 - 2000) + 2000)
+          setTimeout(() =>helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io) ,Math.random() * (2000 - 500) + 500)
+        }
+        if ((gameData.playerOneScore + gameData.playerTwoScore) === MAXTILES) {
+          io.to(gameData.playerOneSocketId).emit('gamefinished', {gotopostgame: true})
+          io.to(gameData.playerTwoSocketId).emit('gamefinished', {gotopostgame: true})
         }
       }
       if (gameData.playerTwoDelay < gameData.playerOneDelay) {
         gameData.playerTwoScore++;
         gameData.playerOneDelay = 0;
         gameData.playerTwoDelay = 0;
-        if ((gameData.playerOneScore + gameData.playerTwoScore) <= MAXTILES) {
+        if ((gameData.playerOneScore + gameData.playerTwoScore) < MAXTILES) {
           helper.sendScore(gameData.playerTwoSocketId, gameData.playerTwoScore, io);
           helper.sendOpponentScore(gameData.playerOneSocketId, gameData.playerTwoScore, io);
-          setTimeout(() =>helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io) ,Math.random() * (5000 - 2000) + 2000)
+          setTimeout(() =>helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io) ,Math.random() * (2000 - 500) + 500)
+        }
+        if ((gameData.playerOneScore + gameData.playerTwoScore) === MAXTILES) {
+          io.to(gameData.playerOneSocketId).emit('gamefinished', {gotopostgame: true})
+          io.to(gameData.playerTwoSocketId).emit('gamefinished', {gotopostgame: true})
         }
       }
     }
@@ -138,7 +146,9 @@ io.on("connection", socket => {
       let playerTwo = games[index].players[1];
       let gameData = {
         playerOneSocketId : games[index].players[0],
+        playerOneName : games[index].playerone,
         playerTwoSocketId : games[index].players[1],
+        playerTwoName : games[index].playertwo,
         playerOneDelay : 0,
         playerTwoDelay : 0,
         playerOneScore : 0,
@@ -146,68 +156,38 @@ io.on("connection", socket => {
       }
       activeGames.set(gameId, gameData);
       helper.sendGameId(gameId, playerOne, playerTwo, io)
+      helper.sendPlayerName(playerOne, games[index].playertwo, io)
+      helper.sendPlayerName(playerTwo, games[index].playerone, io)
       helper.sendNewTilePosition(playerOne, playerTwo, io)
     }
     })
 
-    socket.on('postgame', (data) => {
-      activeGames.forEach((game, i) => {
-        game.forEach((player, index) => {
-          if (player[0] === socket.id) {
-            if (index === 1) {
-              // if player's score is greater than opponent's score
-              if (player[2] > activeGames[i][0][2]) {
-                socket.emit('postgame', {winner:1, score:player[2]})
-              }
-              // if player's score is lower than opponent's score
-              if (player[2] < activeGames[i][0][2]) {
-                socket.emit('postgame', {winner:0, score:player[2]})
-              }
-              // if game is a tie
-              if (player[2] === activeGames[i][0][2]) {
-                socket.emit('postgame', {winner:2, score:player[2]})
-              }
-            }
-            if (index === 0) {
-              // if player's score is greater than opponent's score
-              if (player[2] > activeGames[i][1][2]) {
-                socket.emit('postgame', {winner:1, score:player[2]})
-              }
-              // if player's score is lower than opponent's score
-              if (player[2] < activeGames[i][1][2]) {
-                socket.emit('postgame', {winner:0, score:player[2]})
-              }
-              // if game is a tie
-              if (player[2] === activeGames[i][1][2]) {
-                socket.emit('postgame', {winner:2, score:player[2]})
-              }
-            }
-          }
-        })
-      })
-    })
-
-socket.on('gamefinished', (data) => {
- if (data === true) {
-  activeGames.forEach((game, i) => {
-   game.forEach((player, index) => {
-    if (player[0] === socket.id) {
-     if (index === 1) {
-      if ((player[2] + activeGames[i][0][2]) === MAXTILES) {
-        socket.emit('gamefinished', {gotopostgame: true})
-      }  
-     }
-     if (index === 0) {
-      if ((player[2] + activeGames[i][1][2]) === MAXTILES) {
-        socket.emit('gamefinished', {gotopostgame: true})
-      }  
-     }
+socket.on('postgame', (data) => {
+  for (var [key, game] of activeGames) {
+    if (game.playerOneSocketId == socket.id) {
+      if (game.playerOneScore > game.playerTwoScore) {
+        socket.emit('postgame',{winner:1,score:game.playerOneScore})
+      }
+      if (game.playerOneScore < game.playerTwoScore) {
+       socket.emit('postgame',{winner:0,score:game.playerOneScore})
+      }
+      if (game.playerOneScore == game.playerTwoScore) {
+        socket.emit('postgame',{winner:2,score:game.playerOneScore})
+      }
     }
-   })
-  })
- }
+    if (game.playerTwoSocketId == socket.id) {
+      if (game.playerTwoScore > game.playerOneScore) {
+        socket.emit('postgame',{winner:1,score:game.playerTwoScore})
+      }
+      if (game.playerTwoScore < game.playerOneScore) {
+       socket.emit('postgame',{winner:0,score:game.playerTwoScore})
+      }
+      if (game.playerTwoScore == game.playerOneScore) {
+        socket.emit('postgame',{winner:2,score:game.playerTwoScore})
+      }
+    }
+  }
 })
-
 
     // handles cleaning up of the games array when socket disconnects
   socket.on('disconnect', () => {

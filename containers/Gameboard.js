@@ -14,7 +14,8 @@ export default class Gameboard extends Component {
             score: 0,
             opponentscore: 0,
             delay: null,
-            maxactivetiles: 10,
+            maxactivetiles: 5,
+            opponentname: '',
             gameid : '',
             isloading: true
         }
@@ -27,6 +28,13 @@ export default class Gameboard extends Component {
             this.setState(function (state, props) {
                 return {
                  ...data, isloading:false
+                }
+               });
+        })
+        this.props.socket.on('opponentname', (data) => {
+            this.setState(function (state, props) {
+                return {
+                 ...data
                 }
                });
         })
@@ -47,12 +55,6 @@ export default class Gameboard extends Component {
         this.props.socket.on('gamefinished', (data) => {
             if (data.gotopostgame === true) this.postGame();
         })
-    }
-
-    componentWillUpdate(nextProps, nextState) {
-        if (nextState.maxactivetiles === 0) {
-            this.props.socket.emit('gamefinished', true)
-        }     
     }
 
     postGame = () => {
@@ -99,7 +101,7 @@ export default class Gameboard extends Component {
     return (
         <div className="container">
             <ComponentGame starttime={this.state.starttime}/>
-            {this.state.isloading ? this.showLoadingScreen() : <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore} tilesleft={this.state.maxactivetiles} delay={this.state.delay}/>}
+            {this.state.isloading ? this.showLoadingScreen() : <ComponentScore score={this.state.score} opponentscore={this.state.opponentscore} opponentname={this.state.opponentname}/>}
             <div className="container-tiles">
                 {this.renderTiles()}
             </div>

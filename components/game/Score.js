@@ -6,16 +6,13 @@ export default class Score extends Component {
             <div>
                 <div className="container-score">
                     <div className="container-score-titles">
-                        <p className='score-title'>Score</p>
-                        <p className='score-title'>Opponent</p>
-                        <p className='score-title'>Tiles Left</p>
-                        <p className='score-title'>Click Time</p>
+                        <p className='score-title'>YOU</p>
+                        <p className='score-title'>vs</p>
+                        <p className='score-title'>{this.props.opponentname.toUpperCase()}</p>
                     </div>
                     <div className="container-score-values">
                         <p className='score-value'>{this.props.score}</p>
-                        <p className='score-value'>{this.props.opponentscore}</p>
-                        <p className='score-value'>{this.props.tilesleft}</p>
-                        <p className='score-value'>{this.props.delay}</p>  
+                        <p className='score-value'>{this.props.opponentscore}</p> 
                     </div>
                 </div>
                 <style jsx>{`

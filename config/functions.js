@@ -15,3 +15,6 @@ exports.sendScore = (playerId, newScore, io) => {
 exports.sendOpponentScore = (playerId, newScore, io) => {
     io.to(playerId).emit('score', {opponentscore: newScore})  
 }
+exports.sendPlayerName = (playerId, playerName, io) => {
+    io.to(playerId).emit('opponentname', {opponentname: playerName}) 
+}

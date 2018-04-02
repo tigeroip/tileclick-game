@@ -13,6 +13,7 @@ export default class Postgame extends Component {
     componentDidMount() {
         this.props.socket.emit('postgame', true)
         this.props.socket.on('postgame', (data) => {
+            console.log(data)
             this.setState(function (state, props) {
                 return {
                  ...data, waitingforotherplayer:false
