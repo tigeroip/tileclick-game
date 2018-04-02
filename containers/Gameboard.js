@@ -15,13 +15,10 @@ export default class Gameboard extends Component {
             opponentscore: 0,
             delay: null,
             maxactivetiles: 10,
+            gameid : '',
             isloading: true
         }
     }
-
-    // componentWillMount() {
-    //     this.props.socket.emit('ready', true)
-    // }
 
     componentDidMount() {
         this.props.socket.emit('ready', true)
@@ -34,6 +31,13 @@ export default class Gameboard extends Component {
                });
         })
         this.props.socket.on('score', (data) => {
+            this.setState(function (state, props) {
+                return {
+                 ...data
+                }
+               });
+        })
+        this.props.socket.on('gameid', (data) => {
             this.setState(function (state, props) {
                 return {
                  ...data
@@ -59,7 +63,7 @@ export default class Gameboard extends Component {
         if (isActive == 1) {
             let hit = Date.now();
             let delay = hit - this.state.starttime; 
-            this.props.socket.emit('score', {starttime : this.state.starttime, hit: hit})
+            this.props.socket.emit('score', {gameid:this.state.gameid, starttime : this.state.starttime, hit: hit})
             // reset the gameboard
             this.setState((prevState)=> {
                 if (prevState.maxactivetiles != 0) {

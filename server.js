@@ -11,7 +11,7 @@ const nextHandler = nextApp.getRequestHandler();
 
     const MAXTILES = 10; // max amount of activated tiles per game
     let games = new Array();
-    let activeGames = new Array();
+    let activeGames = new Map();
 
 
 io.on("connection", socket => {
@@ -73,91 +73,44 @@ io.on("connection", socket => {
 
   socket.on("score", data => {
     //the total time it took the player to click on a tile from the moment it became active
-    let playerDelay = data.hit - data.starttime;
-    let playerTwoDelay;
-    let gameIndex;
-    let playerOneIndex;
-    let playerTwoIndex;
-    let isPlayerTwoDelayReceived = false;
-    
-    // initial score and delay
-    activeGames.forEach((game, i) => {
-     game.forEach((player, j) => {
-       if (player === socket.id) {
-         activeGames[i][j] = [socket.id, 0, 0]
-       }
-     })
-    })
+    let clickDelay = data.hit - data.starttime;
+    let areBothPlayersDelaysReceived = false;
+    let getGameData = (gameID) => {return activeGames.get(gameID)};
+    let gameID = data.gameid;
+    let gameData = getGameData(gameID);
 
-    //insert playerDelay to the corresponding player
-    activeGames.forEach((game, i) => {
-      game.forEach((player, j) => {
-        if (player[0] === socket.id && player[1] === 0) {
-          activeGames[i][j][1] = playerDelay;
+    //assign the delay in mouseclick to the corresponding player
+    (gameData.playerOneSocketId == socket.id) ? gameData.playerOneDelay = clickDelay : gameData.playerTwoDelay = clickDelay
+
+    if (gameData.playerOneDelay > 0 && gameData.playerTwoDelay > 0) {
+      areBothPlayersDelaysReceived = true;
+    }
+
+    if (areBothPlayersDelaysReceived === true) {
+      if (gameData.playerOneDelay < gameData.playerTwoDelay) {
+        gameData.playerOneScore++;
+        gameData.playerOneDelay = 0;
+        gameData.playerTwoDelay = 0;
+        if ((gameData.playerOneScore + gameData.playerTwoScore) <= MAXTILES) {
+          helper.sendScore(gameData.playerOneSocketId, gameData.playerOneScore, io);
+          helper.sendOpponentScore(gameData.playerTwoSocketId, gameData.playerOneScore, io);
+          helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io)
         }
-      })
-    })
-
-    activeGames.forEach((game, i) => {
-      game.forEach((player, j) => {
-        //find current player in the game array
-        if (player[0] === socket.id && player[1] > 0) {
-          //if current player is before second player
-          gameIndex = i
-          playerOneIndex = j
-
-          if (j === 0) {
-            playerTwoIndex = 1;
-          }
-          if (j === 1) {
-            playerTwoIndex = 0;
-          }
-        }
-      })
-    })
-    //check if opposing player's delay has been received
-    if (gameIndex !== undefined) {
-      if (playerTwoIndex !== undefined) {
-        if (activeGames[gameIndex][playerTwoIndex][1] !== undefined) {
-          if (activeGames[gameIndex][playerTwoIndex][1] > 0) {
-            isPlayerTwoDelayReceived = true;
-          }
+      }
+      if (gameData.playerTwoDelay < gameData.playerOneDelay) {
+        gameData.playerTwoScore++;
+        gameData.playerOneDelay = 0;
+        gameData.playerTwoDelay = 0;
+        if ((gameData.playerOneScore + gameData.playerTwoScore) <= MAXTILES) {
+          helper.sendScore(gameData.playerTwoSocketId, gameData.playerTwoScore, io);
+          helper.sendOpponentScore(gameData.playerOneSocketId, gameData.playerTwoScore, io);
+          helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io)
         }
       }
     }
-
-
-    if (isPlayerTwoDelayReceived === true) {
-      //check which player wins; lower delay = winner
-      let playerOneDelay = activeGames[gameIndex][playerOneIndex][1]
-      let playerTwoDelay = activeGames[gameIndex][playerTwoIndex][1]
-
-      if (playerOneDelay > playerTwoDelay) {
-        //player two wins the round
-        activeGames[gameIndex][playerTwoIndex][2]++
-        activeGames[gameIndex][playerTwoIndex][1] = 0
-        activeGames[gameIndex][playerOneIndex][1] = 0
-        //Prevent activation of more tiles than specified by MAXTILES
-        if ((activeGames[gameIndex][playerTwoIndex][2] + activeGames[gameIndex][playerOneIndex][2]) <= MAXTILES) {
-          helper.sendScore(activeGames[gameIndex][playerTwoIndex][0], activeGames[gameIndex][playerTwoIndex][2], io)
-          helper.sendOpponentScore(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerTwoIndex][2], io)
-          helper.sendNewTilePosition(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerTwoIndex][0], io)
-        }
-      }
-      if (playerOneDelay < playerTwoDelay) {
-        //player one wins the round
-        activeGames[gameIndex][playerOneIndex][2]++
-        activeGames[gameIndex][playerOneIndex][1] = 0
-        activeGames[gameIndex][playerTwoIndex][1] = 0
-        if ((activeGames[gameIndex][playerTwoIndex][2] + activeGames[gameIndex][playerOneIndex][2]) <= MAXTILES) {
-          helper.sendScore(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerOneIndex][2], io)
-          helper.sendOpponentScore(activeGames[gameIndex][playerTwoIndex][0], activeGames[gameIndex][playerOneIndex][2], io)
-          helper.sendNewTilePosition(activeGames[gameIndex][playerOneIndex][0], activeGames[gameIndex][playerTwoIndex][0], io)
-        }
-      }
-    }
-
+   
   })
+
   // when client indicates it is ready for the game to begin
   socket.on("ready", data => {
     let index = -1;
@@ -172,9 +125,26 @@ io.on("connection", socket => {
       }
     })
     if (index > -1) {
-      let socketIds = [games[index].players[0], games[index].players[1]]
-      activeGames.push(socketIds);
-      helper.sendNewTilePosition(games[index].players[0], games[index].players[1], io)
+      function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+      let gameId = uuidv4();
+      let playerOne = games[index].players[0];
+      let playerTwo = games[index].players[1];
+      let gameData = {
+        playerOneSocketId : games[index].players[0],
+        playerTwoSocketId : games[index].players[1],
+        playerOneDelay : 0,
+        playerTwoDelay : 0,
+        playerOneScore : 0,
+        playerTwoScore :0
+      }
+      activeGames.set(gameId, gameData);
+      helper.sendGameId(gameId, playerOne, playerTwo, io)
+      helper.sendNewTilePosition(playerOne, playerTwo, io)
     }
     })
 
@@ -239,8 +209,6 @@ socket.on('gamefinished', (data) => {
 
     // handles cleaning up of the games array when socket disconnects
   socket.on('disconnect', () => {
-
-    
 
     games.forEach((game, index) => {
       // if only one players disconnects from the game
