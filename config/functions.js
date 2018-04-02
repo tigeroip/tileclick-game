@@ -1,15 +1,3 @@
-
-exports.handleDisconnectedPlayer = (id, rooms) => {
-        let arraysPurged = 0;
-        rooms.forEach((room) => {
-        let firstLength = room.length;
-        room.splice(room.findIndex((el)=> {return el === id}), 1);
-        if (room.length < firstLength)
-            arraysPurged++;
-   })
-   return arraysPurged;
-}
-
 exports.sendGameId = (gameId, playerOneId, playerTwoId, io) => {
     io.to(playerOneId).emit('gameid', {gameid : gameId})  
     io.to(playerTwoId).emit('gameid', {gameid : gameId}) 

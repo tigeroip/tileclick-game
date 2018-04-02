@@ -82,11 +82,13 @@ io.on("connection", socket => {
     //assign the delay in mouseclick to the corresponding player
     (gameData.playerOneSocketId == socket.id) ? gameData.playerOneDelay = clickDelay : gameData.playerTwoDelay = clickDelay
 
+    //check if both players delays have been received
     if (gameData.playerOneDelay > 0 && gameData.playerTwoDelay > 0) {
       areBothPlayersDelaysReceived = true;
     }
 
     if (areBothPlayersDelaysReceived === true) {
+      //calculate score
       if (gameData.playerOneDelay < gameData.playerTwoDelay) {
         gameData.playerOneScore++;
         gameData.playerOneDelay = 0;
@@ -94,7 +96,7 @@ io.on("connection", socket => {
         if ((gameData.playerOneScore + gameData.playerTwoScore) <= MAXTILES) {
           helper.sendScore(gameData.playerOneSocketId, gameData.playerOneScore, io);
           helper.sendOpponentScore(gameData.playerTwoSocketId, gameData.playerOneScore, io);
-          helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io)
+          setTimeout(() =>helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io) ,Math.random() * (5000 - 2000) + 2000)
         }
       }
       if (gameData.playerTwoDelay < gameData.playerOneDelay) {
@@ -104,7 +106,7 @@ io.on("connection", socket => {
         if ((gameData.playerOneScore + gameData.playerTwoScore) <= MAXTILES) {
           helper.sendScore(gameData.playerTwoSocketId, gameData.playerTwoScore, io);
           helper.sendOpponentScore(gameData.playerOneSocketId, gameData.playerTwoScore, io);
-          helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io)
+          setTimeout(() =>helper.sendNewTilePosition(gameData.playerOneSocketId, gameData.playerTwoSocketId, io) ,Math.random() * (5000 - 2000) + 2000)
         }
       }
     }
