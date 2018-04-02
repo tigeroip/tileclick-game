@@ -79,12 +79,17 @@ io.on("connection", socket => {
     let gameID = data.gameid;
     let gameData = getGameData(gameID);
 
-    //assign the delay in mouseclick to the corresponding player
-    (gameData.playerOneSocketId == socket.id) ? gameData.playerOneDelay = clickDelay : gameData.playerTwoDelay = clickDelay
+    try {
+      //assign the delay in mouseclick to the corresponding player
+      (gameData.playerOneSocketId == socket.id) ? gameData.playerOneDelay = clickDelay : gameData.playerTwoDelay = clickDelay
 
-    //check if both players delays have been received
-    if (gameData.playerOneDelay > 0 && gameData.playerTwoDelay > 0) {
-      areBothPlayersDelaysReceived = true;
+      //check if both players delays have been received
+      if (gameData.playerOneDelay > 0 && gameData.playerTwoDelay > 0) {
+        areBothPlayersDelaysReceived = true;
+      }
+    }
+    catch(error) {
+      console.log(error)
     }
 
     if (areBothPlayersDelaysReceived === true) {
@@ -210,17 +215,6 @@ socket.on('postgame', (data) => {
         }
       }
     })
-    if (activeGames.length > 0) {
-      for (let i = 0; i < activeGames.length; i++) {
-        if (activeGames[i].length > 0) {
-          for (let j = 0; j < activeGames.length; j++) {
-            if (activeGames[i][j] == socket.id) {
-              activeGames[i].splice(j, 1)
-            }
-          }
-        }
-      }
-    }
   });
 
 
